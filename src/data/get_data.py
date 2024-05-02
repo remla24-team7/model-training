@@ -1,10 +1,10 @@
 import urllib.request
 import zipfile
 
-URL = 'https://surfdrive.surf.nl/files/index.php/s/OZRd9BcxhGkxTuy/download' # v2, 2000 datapoints
+URL = 'gdrive://48900e618890f4ce97201d1592d45045/dataset' #todo: fix repro get data from remote
 
-EXTRACT_DIR = "smsspamcollection"
+EXTRACT_DIR = "../data"
 
-zip_path, _ = urllib.request.urlretrieve(URL)
-with zipfile.ZipFile(zip_path, "r") as f:
-    f.extractall(EXTRACT_DIR)
+x, y, z = urllib.request.urlretrieve(URL)
+# with zipfile.ZipFile(zip_path, "r") as f:
+#     f.extractall(EXTRACT_DIR)
