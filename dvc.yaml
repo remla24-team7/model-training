@@ -21,11 +21,11 @@ stages:
       - outputs/char_index.joblib
     outs:
       - outputs/model.h5
-    evaluate_model:
-      cmd: python src/models/model_evaluate.py
-      deps:
-        - outputs/model.h5
-        - outputs/x_test.joblib
-        - outputs/y_test.joblib
-      outs:
-        'outputs/classification_report.csv'
+  evaluate_model:
+    cmd: python src/models/model_evaluate.py
+    deps:
+      - outputs/model.h5
+      - outputs/x_test.joblib
+      - outputs/y_test.joblib
+    outs:
+      - 'outputs/classification_report.csv'
