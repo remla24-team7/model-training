@@ -1,0 +1,31 @@
+stages:
+  make_dataset:
+    cmd: python src/data/make_dataset.py
+    deps:
+      - dataset
+    outs:
+      - outputs/x_train.joblib
+      - outputs/y_train.joblib
+      - outputs/x_test.joblib
+      - outputs/y_test.joblib
+      - outputs/x_val.joblib
+      - outputs/y_val.joblib
+      - output/char_index.joblib
+  train_model:
+    cmd: python src/models/model_train.py
+    deps:
+      - outputs/x_train.joblib
+      - outputs/y_train.joblib
+      - outputs/x_val.joblib
+      - outputs/y_val.joblib
+      - outputs/char_index.joblib
+    outs:
+      - outputs/model.h5
+    evaluate_model:
+      cmd: python src/models/model_evaluate.py
+      deps:
+        - outputs/model.h5
+        - outputs/x_test.joblib
+        - outputs/y_test.joblib
+      outs:
+        'outputs/classification_report.csv'

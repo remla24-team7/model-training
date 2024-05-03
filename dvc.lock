@@ -1,0 +1,50 @@
+schema: '2.0'
+stages:
+  get_data:
+    cmd: python src/data/get_data.py
+  test:
+    cmd: python src/data/test.py
+    deps:
+    - path: dataset
+      hash: md5
+      md5: 48900e618890f4ce97201d1592d45045.dir
+      size: 172904892
+      nfiles: 3
+    outs:
+    - path: outputs/test.txt
+      hash: md5
+      md5: 34bb2c5939cc399b73fb7d18557071bc
+      size: 36
+  make_dataset:
+    cmd: python src/data/make_dataset.py
+    deps:
+    - path: dataset
+      hash: md5
+      md5: 48900e618890f4ce97201d1592d45045.dir
+      size: 172904892
+      nfiles: 3
+    outs:
+    - path: outputs/x_test.joblib
+      hash: md5
+      md5: 9efc054fb130a7a7262ede3e002dbff8
+      size: 291359441
+    - path: outputs/x_train.joblib
+      hash: md5
+      md5: bf8f14fe123c36f899b44ad257c01b68
+      size: 836619441
+    - path: outputs/x_val.joblib
+      hash: md5
+      md5: 56b9176994f90b75f32286ca276f8b87
+      size: 412064241
+    - path: outputs/y_test.joblib
+      hash: md5
+      md5: 37a1e10ea0bcccd0466a379ccf7483db
+      size: 1457037
+    - path: outputs/y_train.joblib
+      hash: md5
+      md5: 1c71e546510693ba605e8ef098fc73e2
+      size: 8366433
+    - path: outputs/y_val.joblib
+      hash: md5
+      md5: 39eec3c4fe3d51d4e9990276b74b30be
+      size: 2060561

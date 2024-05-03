@@ -1,6 +1,12 @@
 from keras.models import Sequential
-from keras.layers import Embedding, Conv1D, MaxPooling1D, Flatten, Dense
+from keras.layers import Embedding, Conv1D, MaxPooling1D, Flatten, Dense, Dropout
+from joblib import dump, load
 
+x_train = load('outputs/x_train.joblib')
+y_train = load('outputs/y_train.joblib')
+x_val = load('outputs/x_val.joblib')
+y_val = load('outputs/y_val.joblib')
+char_index = load('outputs/char_index.joblib')
 
 params = {'loss_function': 'binary_crossentropy',
                        'optimizer': 'adam',
@@ -59,3 +65,5 @@ hist = model.fit(x_train, y_train,
                 )
 
 model.summary()
+
+model.save('outputs/model.h5')
