@@ -10,7 +10,7 @@ stages:
       - outputs/y_test.joblib
       - outputs/x_val.joblib
       - outputs/y_val.joblib
-      - output/char_index.joblib
+      - outputs/char_index.joblib
   train_model:
     cmd: python src/models/model_train.py
     deps:
