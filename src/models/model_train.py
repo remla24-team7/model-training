@@ -1,7 +1,60 @@
 from keras.models import Sequential
 from keras.layers import Embedding, Conv1D, MaxPooling1D, Flatten, Dense
+from sklearn.preprocessing import LabelEncoder
+from tensorflow.keras.preprocessing.text import Tokenizer
+import numpy as np
+import pandas as pd
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import matplotlib.pyplot as plt
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Embedding, Conv1D, MaxPooling1D, Flatten
+from keras.preprocessing.sequence import pad_sequences
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import classification_report, confusion_matrix
+import sys
+import os
+
+# Get directory path of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Add the parent directory of the current directory to the sys.path
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+
+from data.get_data import train_test_split
+
+'''
+train = [line.strip() for line in open("../data/data/DL Dataset/train.txt", "r").readlines()[1:]]
+raw_x_train = [line.split("\t")[1] for line in train]
+raw_y_train = [line.split("\t")[0] for line in train]
+
+test = [line.strip() for line in open("../data/data/DL Dataset/test.txt", "r").readlines()]
+raw_x_test = [line.split("\t")[1] for line in test]
+raw_y_test = [line.split("\t")[0] for line in test]
+
+val=[line.strip() for line in open("../data/data/DL Dataset/val.txt", "r").readlines()]
+raw_x_val=[line.split("\t")[1] for line in val]
+raw_y_val=[line.split("\t")[0] for line in val]
 
 
+tokenizer = Tokenizer(lower=True, char_level=True, oov_token='-n-')
+tokenizer.fit_on_texts(raw_x_train + raw_x_val + raw_x_test)
+char_index = tokenizer.word_index
+sequence_length=200
+x_train = pad_sequences(tokenizer.texts_to_sequences(raw_x_train), maxlen=sequence_length)
+x_val = pad_sequences(tokenizer.texts_to_sequences(raw_x_val), maxlen=sequence_length)
+x_test = pad_sequences(tokenizer.texts_to_sequences(raw_x_test), maxlen=sequence_length)
+
+encoder = LabelEncoder()
+
+y_train = encoder.fit_transform(raw_y_train)
+y_val = encoder.transform(raw_y_val)
+y_test = encoder.transform(raw_y_test)
+'''
+
+x_train, x_val, x_test, y_train, y_val, y_test, char_index = train_test_split()
+
+print("train shape: {}".format(x_train.shape))
 params = {'loss_function': 'binary_crossentropy',
                        'optimizer': 'adam',
                        'sequence_length': 200,
@@ -59,3 +112,5 @@ hist = model.fit(x_train, y_train,
                 )
 
 model.summary()
+
+model.save('../models/model.h5')
