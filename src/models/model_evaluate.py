@@ -17,7 +17,7 @@ y_pred_binary = (np.array(y_pred) > 0.5).astype(int)
 y_test=y_test.reshape(-1,1)
 
 # Calculate classification report
-report = classification_report(y_test, y_pred_binary)
+report = classification_report(y_test, y_pred_binary, output_dict=True)
 print('Classification Report:')
 print(report)
 
@@ -29,6 +29,6 @@ confusion_mat = confusion_matrix(y_test, y_pred_binary)
 print('Confusion Matrix:', confusion_mat)
 print('Accuracy:',accuracy_score(y_test,y_pred_binary))
 
-fig = sns.heatmap(confusion_mat,annot=True)
+ax = sns.heatmap(confusion_mat,annot=True)
 
-fig.savefig('outputs/confusion_matrix.png')
+ax.figure.savefig('outputs/confusion_matrix.png')
