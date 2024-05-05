@@ -29,3 +29,5 @@ stages:
       - outputs/y_test.joblib
     outs:
       - 'outputs/classification_report.csv'
+      - 'outputs/confusion_matrix.png'
+      - 'outputs/roc_curve.png'
