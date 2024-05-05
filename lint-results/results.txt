@@ -1,0 +1,22 @@
+The lint scores will be shown here. The Before score it the score before code improvements are made and the after score
+is the score after doing the suggested improvements.
+
+Pylint scores with initial configuration:
+
+make_dataset.py
+Before: 0.00/10
+After:  10.00/10
+
+model_evaluate.py
+Before: 6.82/10
+After:  10.00/10
+
+model_train.py:
+Before: 4.86/10
+After:  10.00/10
+
+confusion_matrix.py:
+Before: 0.00/10
+After:  10.00/10
+
+

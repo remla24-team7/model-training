@@ -1,6 +1,10 @@
-from keras.models import Sequential
-from keras.layers import Embedding, Conv1D, MaxPooling1D, Flatten, Dense, Dropout
-from joblib import dump, load
+"""
+Module for training the neural network model using Keras.
+"""
+
+from joblib import load
+from keras.src.models import Sequential
+from keras.src.layers import Embedding, Conv1D, MaxPooling1D, Dropout, Flatten, Dense
 
 x_train = load('outputs/x_train.joblib')
 y_train = load('outputs/y_train.joblib')
@@ -21,7 +25,7 @@ params = {'loss_function': 'binary_crossentropy',
 
 model = Sequential()
 voc_size = len(char_index.keys())
-print("voc_size: {}".format(voc_size))
+print(f"voc_size: {voc_size}")
 model.add(Embedding(voc_size + 1, 50))
 
 model.add(Conv1D(128, 3, activation='tanh'))

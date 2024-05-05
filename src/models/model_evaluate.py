@@ -1,5 +1,9 @@
+"""
+Module for evaluating the neural network model trained.
+"""
+
+from keras.src.saving import load_model
 from sklearn.metrics import classification_report, confusion_matrix,accuracy_score
-from keras.models import load_model
 from joblib import load
 import numpy as np
 import seaborn as sns
