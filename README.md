@@ -30,15 +30,15 @@ This is the GitHub repo for assignment 1 of CS4295 Release Engineering for Machi
 
 ## Usage
 
-The submission for assignment 1 is within teh branch setup pipeline. After the installation above, checkout to setup-pipeline branch.
+The submission for assignment 1 is within the branch setup pipeline. After the installation above, checkout to setup-pipeline branch.
 
-Gaving cckeced out, run the command: 
+Having checked out, run the command: 
 
     dvc repro --pull
     
-Running the command will pull the required datasets onto your local machine and run the pipeline or get cahaced outputs of the trained model and evaluation. 
+Running the command will pull the required datasets onto your local machine and run the pipeline or get cached outputs of the trained model and evaluation. 
 
-To train or evalaute the model yourself, run the project/src/models/model_train.py file to train the model and project/src/models/model_evaluate.py to evaluate the model.
+To train or evaluate the model yourself, run the project/src/models/model_train.py file to train the model and project/src/models/model_evaluate.py to evaluate the model.
 
 
 ## Dataset 
