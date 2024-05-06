@@ -15,8 +15,114 @@ model_train.py:
 Before: 4.86/10
 After:  10.00/10
 
-confusion_matrix.py:
-Before: 0.00/10
-After:  10.00/10
+
+flake8 evaluation:
+flake8 was run AFTER max scores with pylint was achieved.
+flake8 was configured to follow same line length rile as pyline i.e. line of length 100 os allowed:
+This tool gives no scores, so ill just show what issues showed up if they did.
+
+make_dataset.py
+no issues
+
+model_evaluate.py
+no issues
+
+model_train.py:
+Before:
+model_train.py:16:24: E127 continuation line over-indented for visual indent
+model_train.py:65:17: E128 continuation line under-indented for visual indent
+model_train.py:66:17: E128 continuation line under-indented for visual indent
+model_train.py:67:17: E128 continuation line under-indented for visual indent
+model_train.py:68:17: E128 continuation line under-indented for visual indent
+model_train.py:69:17: E124 closing bracket does not match visual indentation
+After:
+no issues
+
+Bandit evaluation:
+Bandit is run after flake8 shows no issues.
+
+make_dataset.py
+
+    Test results:
+    >> Issue: [B106:hardcoded_password_funcarg] Possible hardcoded password: '-n-'
+       Severity: Low   Confidence: Medium
+       CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+       More Info: https://bandit.readthedocs.io/en/1.7.8/plugins/b106_hardcoded_password_funcarg.html
+       Location: make_dataset.py:26:12
+    25
+    26      tokenizer = Tokenizer(lower=True, char_level=True, oov_token='-n-')
+    27      tokenizer.fit_on_texts(raw_x_train + raw_x_val + raw_x_test)
+
+    --------------------------------------------------
+
+    Code scanned:
+            Total lines of code: 37
+            Total lines skipped (#nosec): 0
+
+    Run metrics:
+            Total issues (by severity):
+                    Undefined: 0
+                    Low: 1
+                    Medium: 0
+                    High: 0
+            Total issues (by confidence):
+                    Undefined: 0
+                    Low: 0
+                    Medium: 1
+                    High: 0
+    Files skipped (0):
+
+    Explanation by me: No fix is made here as there is no password or private information being stored. This can be
+    seen as a false positive and can be ignored as an issue.
 
 
+
+model_evaluate.py
+
+    Test results:
+            No issues identified.
+
+    Code scanned:
+            Total lines of code: 37
+            Total lines skipped (#nosec): 0
+
+    Run metrics:
+            Total issues (by severity):
+                    Undefined: 0
+                    Low: 0
+                    Medium: 0
+                    High: 0
+            Total issues (by confidence):
+                    Undefined: 0
+                    Low: 0
+                    Medium: 0
+                    High: 0
+    Files skipped (0):
+
+model_train.py:
+
+    Test results:
+            No issues identified.
+
+    Code scanned:
+            Total lines of code: 54
+            Total lines skipped (#nosec): 0
+
+    Run metrics:
+            Total issues (by severity):
+                    Undefined: 0
+                    Low: 0
+                    Medium: 0
+                    High: 0
+            Total issues (by confidence):
+                    Undefined: 0
+                    Low: 0
+                    Medium: 0
+                    High: 0
+    Files skipped (0):
+
+
+Final words: Having run three separate linters, and having no issue show up by any of them gives confidence in our codes
+lack of code smells. There was an attempt to make dslinter work as it would show ML specific code smells, but this was
+not possible due to an error which occurs while using an older version of pylint which is a requirement of dslinter
+(the issue happens within the pylint library, so I am unable to fix it in reasonable time).
