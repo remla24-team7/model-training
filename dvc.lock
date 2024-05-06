@@ -100,3 +100,11 @@ stages:
       hash: md5
       md5: 5ea12f5d06c0b2781bbea17887b74305
       size: 410
+    - path: outputs/confusion_matrix.png
+      hash: md5
+      md5: c7680437680b5fa6f3a6883f8c88bd72
+      size: 17375
+    - path: outputs/roc_curve.png
+      hash: md5
+      md5: 69fe8c39e8f4e72244a05676649c07e8
+      size: 33595
