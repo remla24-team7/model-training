@@ -25,7 +25,7 @@ params = {'loss_function': 'binary_crossentropy',
 
 model = Sequential()
 voc_size = len(char_index.keys())
-print(f"voc_size: {voc_size}")
+print("voc_size: {}".format(voc_size))
 model.add(Embedding(voc_size + 1, 50))
 
 model.add(Conv1D(128, 3, activation='tanh'))
@@ -56,6 +56,7 @@ model.add(Dropout(0.2))
 model.add(Flatten())
 
 model.add(Dense(len(params['categories']) - 1, activation='sigmoid'))
+
 
 model.compile(loss=params['loss_function'], optimizer=params['optimizer'], metrics=['accuracy'])
 
