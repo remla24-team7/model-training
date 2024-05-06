@@ -8,6 +8,7 @@ pandas==2.2.2
 scikit-learn==1.4.2
 seaborn==0.13.2
 tensorflow[and-cuda]~=2.16.1
+kaggle==1.6.12
 
 absl-py==2.1.0
 aiohttp==3.9.5
@@ -168,4 +169,3 @@ wheel==0.43.0
 wrapt==1.16.0
 yarl==1.9.4
 zc-lockfile==3.0.post1
-kaggle==1.6.12
