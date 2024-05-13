@@ -1,0 +1,110 @@
+schema: '2.0'
+stages:
+  get_data:
+    cmd: python src/data/get_data.py
+  test:
+    cmd: python src/data/test.py
+    deps:
+    - path: dataset
+      hash: md5
+      md5: 48900e618890f4ce97201d1592d45045.dir
+      size: 172904892
+      nfiles: 3
+    outs:
+    - path: outputs/test.txt
+      hash: md5
+      md5: 34bb2c5939cc399b73fb7d18557071bc
+      size: 36
+  make_dataset:
+    cmd: python src/data/make_dataset.py
+    deps:
+    - path: dataset
+      hash: md5
+      md5: 48900e618890f4ce97201d1592d45045.dir
+      size: 172904892
+      nfiles: 3
+    outs:
+    - path: outputs/char_index.joblib
+      hash: md5
+      md5: 941dc7e5461b0a429941866a00102b8c
+      size: 444
+    - path: outputs/x_test.joblib
+      hash: md5
+      md5: 9efc054fb130a7a7262ede3e002dbff8
+      size: 291359441
+    - path: outputs/x_train.joblib
+      hash: md5
+      md5: bf8f14fe123c36f899b44ad257c01b68
+      size: 836619441
+    - path: outputs/x_val.joblib
+      hash: md5
+      md5: 56b9176994f90b75f32286ca276f8b87
+      size: 412064241
+    - path: outputs/y_test.joblib
+      hash: md5
+      md5: cb123d0b96613ac4fa75532d76b3478a
+      size: 2913833
+    - path: outputs/y_train.joblib
+      hash: md5
+      md5: 1c71e546510693ba605e8ef098fc73e2
+      size: 8366433
+    - path: outputs/y_val.joblib
+      hash: md5
+      md5: 33b40b9c99b9dbc5dbf016f7adfaed70
+      size: 4120881
+  train_model:
+    cmd: python src/models/model_train.py
+    deps:
+    - path: outputs/char_index.joblib
+      hash: md5
+      md5: 941dc7e5461b0a429941866a00102b8c
+      size: 444
+    - path: outputs/x_train.joblib
+      hash: md5
+      md5: bf8f14fe123c36f899b44ad257c01b68
+      size: 836619441
+    - path: outputs/x_val.joblib
+      hash: md5
+      md5: 56b9176994f90b75f32286ca276f8b87
+      size: 412064241
+    - path: outputs/y_train.joblib
+      hash: md5
+      md5: 1c71e546510693ba605e8ef098fc73e2
+      size: 8366433
+    - path: outputs/y_val.joblib
+      hash: md5
+      md5: 33b40b9c99b9dbc5dbf016f7adfaed70
+      size: 4120881
+    outs:
+    - path: outputs/model.h5
+      hash: md5
+      md5: 661ccbd34597859fd41fc61b320917eb
+      size: 5483016
+  evaluate_model:
+    cmd: python src/models/model_evaluate.py
+    deps:
+    - path: outputs/model.h5
+      hash: md5
+      md5: 661ccbd34597859fd41fc61b320917eb
+      size: 5483016
+    - path: outputs/x_test.joblib
+      hash: md5
+      md5: 9efc054fb130a7a7262ede3e002dbff8
+      size: 291359441
+    - path: outputs/y_test.joblib
+      hash: md5
+      md5: cb123d0b96613ac4fa75532d76b3478a
+      size: 2913833
+    outs:
+    - path: outputs/classification_report.csv
+      hash: md5
+      md5: 5ea12f5d06c0b2781bbea17887b74305
+      size: 410
+    - path: outputs/confusion_matrix.png
+      hash: md5
+      md5: c7680437680b5fa6f3a6883f8c88bd72
+      size: 17375
+    - path: outputs/roc_curve.png
+      hash: md5
+      md5: 69fe8c39e8f4e72244a05676649c07e8
+      size: 33595
