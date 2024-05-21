@@ -6,6 +6,7 @@ from keras.src.legacy.preprocessing.text import Tokenizer
 from keras.src.utils import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from joblib import dump
+from lib_ml_remla import Preprocess
 
 # check data locations with extraction from drive
 with open("dataset/train.txt", "r", encoding="utf-8") as file:
@@ -27,9 +28,9 @@ tokenizer = Tokenizer(lower=True, char_level=True, oov_token='-n-')
 tokenizer.fit_on_texts(raw_x_train + raw_x_val + raw_x_test)
 char_index = tokenizer.word_index
 SEQUENCE_LENGTH = 200
-x_train = pad_sequences(tokenizer.texts_to_sequences(raw_x_train), maxlen=SEQUENCE_LENGTH)
-x_val = pad_sequences(tokenizer.texts_to_sequences(raw_x_val), maxlen=SEQUENCE_LENGTH)
-x_test = pad_sequences(tokenizer.texts_to_sequences(raw_x_test), maxlen=SEQUENCE_LENGTH)
+x_train = Preprocess.preprocess(raw_x_train)# pad_sequences(tokenizer.texts_to_sequences(raw_x_train), maxlen=SEQUENCE_LENGTH)
+x_val = Preprocess.preprocess(raw_x_val)# pad_sequences(tokenizer.texts_to_sequences(raw_x_val), maxlen=SEQUENCE_LENGTH)
+x_test = Preprocess.preprocess(raw_x_test)# pad_sequences(tokenizer.texts_to_sequences(raw_x_test), maxlen=SEQUENCE_LENGTH)
 
 encoder = LabelEncoder()
 
