@@ -17,11 +17,11 @@ def load_data():
 # TODO: Added this code to be able to test fucntionlity. Needs to be changed, as idk why the original one wont find the
 #  files
 def load_data_test():
-    x_train = load('../outputs/x_train.joblib')
-    y_train = load('../outputs/y_train.joblib')
-    x_val = load('../outputs/x_val.joblib')
-    y_val = load('../outputs/y_val.joblib')
-    char_index = load('../outputs/char_index.joblib')
+    x_train = load('outputs/x_train.joblib')
+    y_train = load('outputs/y_train.joblib')
+    x_val = load('outputs/x_val.joblib')
+    y_val = load('outputs/y_val.joblib')
+    char_index = load('outputs/char_index.joblib')
     return x_train, y_train, x_val, y_val, char_index
 
 
@@ -81,6 +81,6 @@ if __name__ == "__main__":
               'char_index': None,
               'epoch': 30,
               'embedding_dimension': 50,
-              'dataset_dir': "../dataset/small_dataset/"
+              'dataset_dir': "dataset/small_dataset/"
               }
     model, hist = train_model(x_train, y_train, x_val, y_val, params, char_index)

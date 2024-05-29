@@ -14,7 +14,7 @@ def test_load_data():
 
 
 def test_build_model():
-    char_index = load('../outputs/char_index.joblib')
+    char_index = load('outputs/char_index.joblib')
     params = {'loss_function': 'binary_crossentropy',
               'optimizer': 'adam',
               'sequence_length': 200,
@@ -24,7 +24,7 @@ def test_build_model():
               'char_index': None,
               'epoch': 30,
               'embedding_dimension': 50,
-              'dataset_dir': "../dataset/small_dataset/"
+              'dataset_dir': "dataset/small_dataset/"
               }
     voc_size = len(char_index.keys())
     model = build_model(voc_size, params['categories'], params['embedding_dimension'])
