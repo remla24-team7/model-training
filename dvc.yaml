@@ -31,3 +31,19 @@ stages:
       - 'outputs/classification_report.csv'
       - 'outputs/confusion_matrix.png'
       - 'outputs/roc_curve.png'
+  make_mutamorphic_data:
+    cmd: python tests/mutamorphic_tests.py
+    deps:
+      - dataset/train.txt
+    outs:
+      - outputs/x_train_mutated.joblib
+  mutamorphic_eval:
+    cmd: python tests/mutamorphic_eval.py
+    deps:
+      - outputs/model.h5
+      - outputs/x_train_mutated.joblib
+      - outputs/y_train.joblib
+    outs:
+      - outputs/mutamorphic_classification_report.csv
+      - outputs/mutamorphic_confusion_matrix.png
+      - outputs/mutamorphic_roc_curve.png
