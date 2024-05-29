@@ -1,11 +1,13 @@
-# test_train_model.py
+"""
+Test model train fucntion
+"""
 import pytest
 from joblib import load
-from src.models.model_train import load_data, load_data_test, train_model, build_model
+from src.models.model_train import load_data, train_model, build_model
 
 
 def test_load_data():
-    x_train, y_train, x_val, y_val, char_index = load_data_test()
+    x_train, y_train, x_val, y_val, char_index = load_data()
     assert x_train is not None, "x_train should not be None"
     assert y_train is not None, "y_train should not be None"
     assert x_val is not None, "x_val should not be None"
@@ -32,14 +34,14 @@ def test_build_model():
 
 
 def test_train_model():
-    x_train, y_train, x_val, y_val, char_index = load_data_test()
+    x_train, y_train, x_val, y_val, char_index = load_data()
     params = {
         'loss_function': 'binary_crossentropy',
         'optimizer': 'adam',
-        'batch_train': 10,  # Reduced batch size for testing
+        'batch_train': 10,
         'batch_test': 10,
         'categories': ['phishing', 'legitimate'],
-        'epoch': 1,  # Reduced epochs for testing
+        'epoch': 1,
         'embedding_dimension': 50
     }
     model, history = train_model(x_train[:10], y_train[:10], x_val[:10], y_val[:10], params, char_index)

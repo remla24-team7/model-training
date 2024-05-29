@@ -1,4 +1,6 @@
-# test_evaluate_model.py
+"""
+Test model evaluation script
+"""
 import pytest
 from src.models.model_evaluate import evaluate_model
 
