@@ -1,4 +1,5 @@
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
+from joblib import dump
 from sklearn.metrics.pairwise import cosine_similarity
 import random
 from lib_ml_remla import Preprocess
@@ -95,8 +96,6 @@ def is_valid_url(url):
   except ValueError:
     return False
   
-
-
 def generate_mutamorphic_sample(url):
     """Generate a sample with a mutated URL and its original URL."""
     mutated_urls = generate_single_feature_mutants(url, num_mutations=10) #mutate the original URL
@@ -116,8 +115,6 @@ def generate_mutamorphic_sample(url):
 
     return most_similar_url
 
-print(generate_mutamorphic_sample("http://example.com/search/product?id=123&page=2#section"))
-
 def generate_mutamorphic_dataset(X_test):
     """Generate a dataset with mutated URLs and their original URLs."""
     mutated_samples = []
@@ -127,12 +124,14 @@ def generate_mutamorphic_dataset(X_test):
     return mutated_samples
 
 
-with open("dataset/train.txt", "r", encoding="utf-8") as file:
-    train = [line.strip() for line in file.readlines()[1:]]
-raw_x_train = [line.split("\t")[1] for line in train]
-raw_y_train = [line.split("\t")[0] for line in train]
+
+if __name__ == "__main__":
+    with open("dataset/train.txt", "r", encoding="utf-8") as file:
+        train = [line.strip() for line in file.readlines()[1:]]
+    raw_x_train = [line.split("\t")[1] for line in train]
+    raw_y_train = [line.split("\t")[0] for line in train]
 
 
-X_train_mutated = generate_mutamorphic_dataset(raw_x_train)
+    X_train_mutated = generate_mutamorphic_dataset(raw_x_train)
 
-print(X_train_mutated[:5])
+    dump(X_train_mutated, 'outputs/x_train_mutated.joblib')

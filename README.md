@@ -44,3 +44,17 @@ To train or evaluate the model yourself, run the project/src/models/model_train.
 ## Dataset 
 
 The dataset we use was open for public use by kaggle. It can be found here: [dataset](https://www.kaggle.com/datasets/aravindhannamalai/dl-dataset/download?datasetVersionNumber=1)
+
+## Mutamorphic testing:
+Create dataset through:
+creation of the dataset is still reliant on the tokenizer being pressent in the repro, this should be fixed through the lib-ml package as a TODO:
+
+```
+dvc repro make_mutamorphic_data
+```
+
+Eval on mutamorphic data
+
+```
+dvc repro mutamorphic_eval
+```
