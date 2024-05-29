@@ -24,7 +24,9 @@ jobs:
         pip install pytest
         pip install -r requirements.txt
     - name: Pull data
-      run: dvc pull
+      run: |
+        dvc remote modify myremote gdrive_use_service_account true
+        dvc pull
     - name: Repro the pipeline
       run: dvc repro
     - name: Test with pytest
