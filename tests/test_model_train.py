@@ -1,4 +1,6 @@
-# test_train_model.py
+"""
+Test model training.
+"""
 import pytest
 from joblib import load
 from src.models.model_train import load_data, load_data_test, train_model, build_model
@@ -28,7 +30,7 @@ def test_build_model():
               }
     voc_size = len(char_index.keys())
     model = build_model(voc_size, params['categories'], params['embedding_dimension'])
-    assert model is not None, "Model should be initialized"
+    assert model is not None, "Model should not be none"
 
 
 def test_train_model():
@@ -36,12 +38,12 @@ def test_train_model():
     params = {
         'loss_function': 'binary_crossentropy',
         'optimizer': 'adam',
-        'batch_train': 10,  # Reduced batch size for testing
+        'batch_train': 10,
         'batch_test': 10,
         'categories': ['phishing', 'legitimate'],
-        'epoch': 1,  # Reduced epochs for testing
+        'epoch': 1,
         'embedding_dimension': 50
     }
-    model, history = train_model(x_train[:10], y_train[:10], x_val[:10], y_val[:10], params, char_index)
-    assert history.history['loss'][0] is not None, "Training did not produce a loss"
-    assert len(history.history['accuracy']) > 0, "Training did not produce accuracy metrics"
+    model, hist = train_model(x_train[:10], y_train[:10], x_val[:10], y_val[:10], params, char_index)
+    assert hist.history['loss'][0] is not None, "Training did not produce a loss"
+    assert len(hist.history['accuracy']) > 0, "Training did not produce accuracy metrics"
