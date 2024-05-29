@@ -1,6 +1,4 @@
-"""
-Test model evaluate returns sensible results.
-"""
+# test_evaluate_model.py
 import pytest
 from src.models.model_evaluate import evaluate_model
 
