@@ -1,15 +1,11 @@
-"""
-Test model evaluation script
-"""
-import pytest
-from src.models.model_evaluate import evaluate_model
+from scripts.evaluate import evaluate_model
+import dvc.api
+
 
 def test_evaluate_model():
-    model_path = 'outputs/model.h5'
-    x_test_path = 'outputs/x_test.joblib'
-    y_test_path = 'outputs/y_test.joblib'
-    report, confusion_mat, accuracy, auc = evaluate_model(model_path, x_test_path, y_test_path, True)
-
-    assert confusion_mat.size > 0, "Confusion matrix should not be empty"
-    assert 0 <= accuracy <= 1, "Accuracy should be between 0 and 1"
-    assert 0 <= auc <= 1, "AUC should be between 0 and 1"
+    params = dvc.api.params_show()
+    roc_curve, confusion_matrix, metrics = evaluate_model(params)
+    assert roc_curve is not None, "ROC curve should not be None"
+    assert confusion_matrix is not None, "Confusion matrix should not be None"
+    assert 0 <= metrics["accuracy"] <= 1, "Accuracy should be between 0 and 1"
+    assert 0 <= metrics["auc"] <= 1, "AUC should be between 0 and 1"

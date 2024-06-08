@@ -6,5 +6,5 @@ params = dvc.api.params_show()
 preprocess_dataset(
     dataset_dir=params["dirs"]["dataset"],
     outputs_dir=params["dirs"]["outputs"]["preprocess"],
-    sequence_length=params["preprocess"]["sequence_length"]
+    sequence_length=params["preprocess"]["sequence_length"],
 )

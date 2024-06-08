@@ -33,28 +33,28 @@ def build_model(params):
         Conv1D(128, 3, activation="tanh"),
         MaxPooling1D(3),
         Dropout(0.2),
-        
+
         Conv1D(128, 7, activation="tanh", padding="same"),
         Dropout(0.2),
-        
+
         Conv1D(128, 5, activation="tanh", padding="same"),
         Dropout(0.2),
-        
+
         Conv1D(128, 3, activation="tanh", padding="same"),
         MaxPooling1D(3),
         Dropout(0.2),
-        
+
         Conv1D(128, 5, activation="tanh", padding="same"),
         Dropout(0.2),
-        
+
         Conv1D(128, 3, activation="tanh", padding="same"),
         MaxPooling1D(3),
         Dropout(0.2),
-        
+
         Conv1D(128, 3, activation="tanh", padding="same"),
         MaxPooling1D(3),
         Dropout(0.2),
-        
+
         Flatten(),
         Dense(output_dim, activation="sigmoid"),
     ])
@@ -75,7 +75,7 @@ def train_model(model, params, x_train, y_train, validation_data=None):
 
 if __name__ == "__main__":
     params = dvc.api.params_show()
-    
+
     train_path = Path(params["dirs"]["outputs"]["train"])
     os.makedirs(train_path, exist_ok=True)
 

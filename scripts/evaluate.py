@@ -14,33 +14,60 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-params = dvc.api.params_show()
 
-preprocess_path = Path(params["dirs"]["outputs"]["preprocess"])
-train_path = Path(params["dirs"]["outputs"]["train"])
+def evaluate_model(params):
+    preprocess_path = Path(params["dirs"]["outputs"]["preprocess"])
+    train_path = Path(params["dirs"]["outputs"]["train"])
 
-evaluate_path = Path(params["dirs"]["outputs"]["evaluate"])
-os.makedirs(evaluate_path, exist_ok=True)
+    encoder = joblib.load(preprocess_path / "encoder.joblib")
+    model = load_model(train_path / "model.keras")
 
-encoder = joblib.load(preprocess_path / "encoder.joblib")
-model = load_model(train_path / "model.keras")
+    x_test = joblib.load(preprocess_path / "x_test.joblib")[:params["evaluate"]["slice"]]
+    y_test = joblib.load(preprocess_path / "y_test.joblib")[:params["evaluate"]["slice"]]
 
-x_test = joblib.load(preprocess_path / "x_test.joblib")[:params["evaluate"]["slice"]]
-y_test = joblib.load(preprocess_path / "y_test.joblib")[:params["evaluate"]["slice"]]
+    y_pred = model.predict(x_test, batch_size=params["evaluate"]["batch_size"]).flatten()
+    y_pred_binary = y_pred.round().astype(int)
 
-y_pred = model.predict(x_test, batch_size=params["evaluate"]["batch_size"]).flatten()
-y_pred_binary = y_pred.round().astype(int)
+    roc_curve = RocCurveDisplay.from_predictions(y_test, y_pred)
 
-RocCurveDisplay.from_predictions(y_test, y_pred).plot()
-plt.savefig(evaluate_path / "roc_curve.png")
+    confusion_matrix = ConfusionMatrixDisplay.from_predictions(
+        y_test,
+        y_pred_binary,
+        display_labels=encoder.classes_,
+    )
 
-ConfusionMatrixDisplay.from_predictions(y_test, y_pred_binary, display_labels=encoder.classes_).plot()
-plt.savefig(evaluate_path / "conf_matrix.png")
+    report = classification_report(
+        y_test,
+        y_pred_binary,
+        target_names=encoder.classes_,
+        output_dict=True,
+    )
 
-metrics = {
-  **classification_report(y_test, y_pred_binary, target_names=encoder.classes_, output_dict=True),
-  "auc": roc_auc_score(y_test, y_pred)
-}
+    metrics = {
+        **report,
+        "auc": roc_auc_score(y_test, y_pred),
+    }
 
-with open(evaluate_path / "metrics.json", "w") as fp:
-  json.dump(metrics, fp)
+    return (
+        roc_curve,
+        confusion_matrix,
+        metrics,
+    )
+
+
+if __name__ == "__main__":
+    params = dvc.api.params_show()
+
+    evaluate_path = Path(params["dirs"]["outputs"]["evaluate"])
+    os.makedirs(evaluate_path, exist_ok=True)
+
+    roc_curve, confusion_matrix, metrics = evaluate_model(params)
+
+    roc_curve.plot()
+    plt.savefig(evaluate_path / "roc_curve.png")
+
+    confusion_matrix.plot()
+    plt.savefig(evaluate_path / "conf_matrix.png")
+
+    with open(evaluate_path / "metrics.json", "w") as fp:
+        json.dump(metrics, fp)
