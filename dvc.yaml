@@ -30,14 +30,12 @@ stages:
     params:
       - evaluate
 
-  mutamorphic_preprocess:
-    cmd: python scripts/mutamorphic/preprocess.py
-    deps:
-      - ${dirs.dataset}/train.txt
-    outs:
-      - ${dirs.outputs.mutamorphic}/x_train.joblib
-    params:
-      - mutamorphic
+  # mutamorphic_preprocess:
+  #   cmd: python scripts/mutamorphic/preprocess.py
+  #   deps:
+  #     - ${dirs.dataset}/train.txt
+  #   outs:
+  #     - ${dirs.outputs.mutamorphic}/x_train.joblib
 
   # mutamorphic_evaluate:
   #   cmd: python scripts/mutamorphic/evaluate.py
@@ -50,5 +48,3 @@ stages:
   #     - ${dirs.outputs.mutamorphic}/conf_matrix.png
   #   metrics:
   #     - ${dirs.outputs.mutamorphic}/metrics.json
-  #   params:
-  #     - mutamorphic
