@@ -4,6 +4,7 @@ dirs:
     preprocess: outputs/preprocess
     train: outputs/train
     evaluate: outputs/evaluate
+    mutamorphic: outputs/mutamorphic
 
 preprocess:
   sequence_length: 200

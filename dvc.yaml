@@ -22,7 +22,7 @@ stages:
     deps:
       - ${dirs.outputs.preprocess}
       - ${dirs.outputs.train}
-    outs:
+    plots:
       - ${dirs.outputs.evaluate}/roc_curve.png
       - ${dirs.outputs.evaluate}/conf_matrix.png
     metrics:
@@ -30,19 +30,25 @@ stages:
     params:
       - evaluate
 
-  # make_mutamorphic_data:
-  #   cmd: python tests/mutamorphic_tests.py
+  mutamorphic_preprocess:
+    cmd: python scripts/mutamorphic/preprocess.py
+    deps:
+      - ${dirs.dataset}/train.txt
+    outs:
+      - ${dirs.outputs.mutamorphic}/x_train.joblib
+    params:
+      - mutamorphic
+
+  # mutamorphic_evaluate:
+  #   cmd: python scripts/mutamorphic/evaluate.py
   #   deps:
-  #     - dataset/train.txt
-  #   outs:
-  #     - outputs/x_train_mutated.joblib
-  # mutamorphic_eval:
-  #   cmd: python tests/mutamorphic_eval.py
-  #   deps:
-  #     - outputs/model.h5
-  #     - outputs/x_train_mutated.joblib
-  #     - outputs/y_train.joblib
-  #   outs:
-  #     - outputs/mutamorphic_classification_report.csv
-  #     - outputs/mutamorphic_confusion_matrix.png
-  #     - outputs/mutamorphic_roc_curve.png
+  #     - ${dirs.outputs.train}/model.keras
+  #     - ${dirs.outputs.mutamorphic}/x_train.joblib
+  #     - ${dirs.outputs.preprocess}/y_train.joblib
+  #   plots:
+  #     - ${dirs.outputs.mutamorphic}/roc_curve.png
+  #     - ${dirs.outputs.mutamorphic}/conf_matrix.png
+  #   metrics:
+  #     - ${dirs.outputs.mutamorphic}/metrics.json
+  #   params:
+  #     - mutamorphic

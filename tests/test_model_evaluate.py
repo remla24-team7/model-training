@@ -1,5 +1,5 @@
-from scripts.evaluate import evaluate_model
 import dvc.api
+from scripts.evaluate import evaluate_model
 
 
 def test_evaluate_model():

@@ -1,5 +1,5 @@
-from scripts.train import load_data, train_model, build_model
 import dvc.api
+from scripts.train import load_data, train_model, build_model
 
 
 def test_load_data():
