@@ -1,49 +1,54 @@
 stages:
-  make_dataset:
-    cmd: python src/data/make_dataset.py
+  preprocess:
+    cmd: python scripts/preprocess.py
     deps:
-      - dataset
+      - ${dirs.dataset}
     outs:
-      - outputs/x_train.joblib
-      - outputs/y_train.joblib
-      - outputs/x_test.joblib
-      - outputs/y_test.joblib
-      - outputs/x_val.joblib
-      - outputs/y_val.joblib
-      - outputs/char_index.joblib
-  train_model:
-    cmd: python src/models/model_train.py
+      - ${dirs.outputs.preprocess}
+    params:
+      - preprocess
+
+  train:
+    cmd: python scripts/train.py
     deps:
-      - outputs/x_train.joblib
-      - outputs/y_train.joblib
-      - outputs/x_val.joblib
-      - outputs/y_val.joblib
-      - outputs/char_index.joblib
+      - ${dirs.outputs.preprocess}
     outs:
-      - outputs/model.h5
-  evaluate_model:
-    cmd: python src/models/model_evaluate.py
+      - ${dirs.outputs.train}
+    params:
+      - train
+
+  evaluate:
+    cmd: python scripts/evaluate.py
     deps:
-      - outputs/model.h5
-      - outputs/x_test.joblib
-      - outputs/y_test.joblib
-    outs:
-      - 'outputs/classification_report.csv'
-      - 'outputs/confusion_matrix.png'
-      - 'outputs/roc_curve.png'
-  make_mutamorphic_data:
-    cmd: python tests/mutamorphic_tests.py
+      - ${dirs.outputs.preprocess}
+      - ${dirs.outputs.train}
+    plots:
+      - ${dirs.outputs.evaluate}/roc_curve.png
+      - ${dirs.outputs.evaluate}/conf_matrix.png
+    metrics:
+      - ${dirs.outputs.evaluate}/metrics.json
+    params:
+      - evaluate
+
+  mutamorphic_preprocess:
+    cmd: python scripts/mutamorphic/preprocess.py
     deps:
-      - dataset/train.txt
+      - ${dirs.dataset}/train.txt
     outs:
-      - outputs/x_train_mutated.joblib
-  mutamorphic_eval:
-    cmd: python tests/mutamorphic_eval.py
-    deps:
-      - outputs/model.h5
-      - outputs/x_train_mutated.joblib
-      - outputs/y_train.joblib
-    outs:
-      - outputs/mutamorphic_classification_report.csv
-      - outputs/mutamorphic_confusion_matrix.png
-      - outputs/mutamorphic_roc_curve.png
+      - ${dirs.outputs.mutamorphic}/x_train.joblib
+    params:
+      - mutamorphic
+
+  # mutamorphic_evaluate:
+  #   cmd: python scripts/mutamorphic/evaluate.py
+  #   deps:
+  #     - ${dirs.outputs.train}/model.keras
+  #     - ${dirs.outputs.mutamorphic}/x_train.joblib
+  #     - ${dirs.outputs.preprocess}/y_train.joblib
+  #   plots:
+  #     - ${dirs.outputs.mutamorphic}/roc_curve.png
+  #     - ${dirs.outputs.mutamorphic}/conf_matrix.png
+  #   metrics:
+  #     - ${dirs.outputs.mutamorphic}/metrics.json
+  #   params:
+  #     - mutamorphic

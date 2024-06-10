@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "model-training"
+version = "0.1.0"
+description = "model-training"
+authors = []
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+lib-ml = { git = "https://github.com/remla24-team7/lib-ml.git", tag = "v0.1.1" }
+matplotlib = "^3.9.0"
+
+[tool.poetry.group.dev.dependencies]
+tensorflow = "^2.16.1"
+dvc = { extras = ["gdrive"], version = "^3.50.1" }
+pytest = "^8.2.2"
+pylint = "^3.2.3"
+flake8 = "^7.0.0"
+bandit = "^1.7.8"
+
+[tool.bandit.assert_used]
+skips = ['./tests/test_*.py']
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
