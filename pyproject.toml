@@ -16,6 +16,11 @@ tensorflow = "^2.16.1"
 dvc = { extras = ["gdrive"], version = "^3.50.1" }
 pytest = "^8.2.2"
 pylint = "^3.2.3"
+flake8 = "^7.0.0"
+bandit = "^1.7.8"
+
+[tool.bandit.assert_used]
+skips = ['./tests/test_*.py']
 
 [build-system]
 requires = ["poetry-core"]

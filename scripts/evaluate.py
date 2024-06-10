@@ -4,6 +4,7 @@ from pathlib import Path
 
 import dvc.api
 import joblib
+# pylint: disable=no-name-in-module,import-error
 from tensorflow.keras.models import load_model
 
 import matplotlib.pyplot as plt
@@ -69,5 +70,5 @@ if __name__ == "__main__":
     confusion_matrix.plot()
     plt.savefig(evaluate_path / "conf_matrix.png")
 
-    with open(evaluate_path / "metrics.json", "w") as fp:
+    with open(evaluate_path / "metrics.json", "w", encoding="utf-8") as fp:
         json.dump(metrics, fp)

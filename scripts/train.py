@@ -8,6 +8,7 @@ import joblib
 from keras.src.models import Sequential
 from keras.src.layers import Embedding, Conv1D, MaxPooling1D, Dropout, Flatten, Dense
 
+
 def load_data(params):
     preprocess_path = Path(params["dirs"]["outputs"]["preprocess"])
 
@@ -17,6 +18,7 @@ def load_data(params):
         joblib.load(preprocess_path / "x_val.joblib"),
         joblib.load(preprocess_path / "y_val.joblib"),
     )
+
 
 def build_model(params):
     preprocess_path = Path(params["dirs"]["outputs"]["preprocess"])
@@ -59,6 +61,7 @@ def build_model(params):
         Dense(output_dim, activation="sigmoid"),
     ])
 
+
 def train_model(model, params, x_train, y_train, validation_data=None):
     model.compile(
         loss=params["train"]["loss_function"],
@@ -73,6 +76,7 @@ def train_model(model, params, x_train, y_train, validation_data=None):
         epochs=params["train"]["epochs"],
     )
 
+
 if __name__ == "__main__":
     params = dvc.api.params_show()
 
@@ -84,5 +88,5 @@ if __name__ == "__main__":
     history = train_model(model, params, x_train, y_train, validation_data=(x_val, y_val))
 
     model.save(train_path / "model.keras")
-    with open(train_path / "history.json", "w") as fp:
+    with open(train_path / "history.json", "w", encoding="utf-8") as fp:
         json.dump(history.history, fp)
