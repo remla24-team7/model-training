@@ -73,3 +73,15 @@ stages:
       hash: md5
       md5: 9ac5f8d64aa16285024b0d2368b49cd9
       size: 21448
+  mutamorphic_preprocess:
+    cmd: python scripts/mutamorphic/preprocess.py
+    deps:
+    - path: dataset/test.txt
+      hash: md5
+      md5: a1cab28ad8554fd9269d31e5708469d0
+      size: 32724891
+    outs:
+    - path: outputs/mutamorphic/x_test.joblib
+      hash: md5
+      md5: db8b10fab7ef46002b9e42f4b78b772a
+      size: 308840098

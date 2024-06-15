@@ -140,7 +140,7 @@ def generate_single_feature_mutants(url, num_mutations=5):
 
     # Ensure we only return a specified number of unique mutations
     unique_mutants = list(set(all_mutants))
-    num_mutations = max(num_mutations, len(unique_mutants))
+    num_mutations = min(num_mutations, len(unique_mutants))
     return random.sample(unique_mutants, num_mutations)
 
 
@@ -157,7 +157,8 @@ def generate_mutamorphic_sample(url, preprocess):
     mutated_urls = generate_single_feature_mutants(
         url, num_mutations=10
     )  # mutate the original URL
-
+    # print("original:", url)
+    # print(mutated_urls)
     for mutated_url in mutated_urls:  # structural filtreing
         if not is_valid_url(mutated_url):
             mutated_urls.remove(mutated_url)
@@ -180,14 +181,14 @@ def generate_mutamorphic_dataset(x_test, preprocess):
     for url in x_test:
         mutated_sample = generate_mutamorphic_sample(url, preprocess)
         mutated_samples.append(mutated_sample)
-    return mutated_samples
+    return np.array(mutated_samples)
 
 
 if __name__ == "__main__":
-    with open("dataset/train.txt", "r", encoding="utf-8") as file:
-        train = [line.strip() for line in file.readlines()[1:]]
-    raw_x_train = [line.split("\t")[1] for line in train]
-    raw_y_train = [line.split("\t")[0] for line in train]
+    with open("dataset/test.txt", "r", encoding="utf-8") as file:
+        test = [line.strip() for line in file.readlines()[1:]]
+        raw_x_test = [line.split("\t")[1] for line in test]
+        raw_y_test = [line.split("\t")[0] for line in test]
 
     from pathlib import Path
     import dvc.api
@@ -200,11 +201,12 @@ if __name__ == "__main__":
 
     def preprocess(x):
         return pad_sequences(tokenizer.texts_to_sequences(x), maxlen=200)
+    
 
-    x_train_mutated = generate_mutamorphic_dataset(raw_x_train, preprocess)
+    x_test_mutated = generate_mutamorphic_dataset(raw_x_test, preprocess)
 
     import os
 
     mutamorphic_path = Path(params["dirs"]["outputs"]["mutamorphic"])
     os.makedirs(mutamorphic_path, exist_ok=True)
-    joblib.dump(x_train_mutated, mutamorphic_path / "x_train.joblib")
+    joblib.dump(x_test_mutated, mutamorphic_path / "x_test.joblib")

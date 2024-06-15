@@ -30,21 +30,23 @@ stages:
     params:
       - evaluate
 
-  # mutamorphic_preprocess:
-  #   cmd: python scripts/mutamorphic/preprocess.py
-  #   deps:
-  #     - ${dirs.dataset}/train.txt
-  #   outs:
-  #     - ${dirs.outputs.mutamorphic}/x_train.joblib
+  mutamorphic_preprocess:
+    cmd: python scripts/mutamorphic/preprocess.py
+    deps:
+      - ${dirs.dataset}/test.txt
+    outs:
+      - ${dirs.outputs.mutamorphic}/x_test.joblib
 
-  # mutamorphic_evaluate:
-  #   cmd: python scripts/mutamorphic/evaluate.py
-  #   deps:
-  #     - ${dirs.outputs.train}/model.keras
-  #     - ${dirs.outputs.mutamorphic}/x_train.joblib
-  #     - ${dirs.outputs.preprocess}/y_train.joblib
-  #   plots:
-  #     - ${dirs.outputs.mutamorphic}/roc_curve.png
-  #     - ${dirs.outputs.mutamorphic}/conf_matrix.png
-  #   metrics:
-  #     - ${dirs.outputs.mutamorphic}/metrics.json
+  mutamorphic_evaluate:
+    cmd: python scripts/mutamorphic/evaluate.py
+    deps:
+      - ${dirs.outputs.train}/model.keras
+      - ${dirs.outputs.mutamorphic}/x_test.joblib
+      - ${dirs.outputs.preprocess}/y_test.joblib
+    plots:
+      - ${dirs.outputs.mutamorphic}/roc_curve.png
+      - ${dirs.outputs.mutamorphic}/conf_matrix.png
+    metrics:
+      - ${dirs.outputs.mutamorphic}/metrics.json
+    params:
+      - evaluate
