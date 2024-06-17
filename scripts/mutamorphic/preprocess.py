@@ -1,8 +1,13 @@
+import os
+from pathlib import Path
 import random
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
+import dvc.api
 import joblib
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+
+from lib_ml.dataset import load_dataset_file
 
 # pylint: disable=no-name-in-module,import-error
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -185,15 +190,9 @@ def generate_mutamorphic_dataset(x_test, preprocess):
 
 
 if __name__ == "__main__":
-    with open("dataset/test.txt", "r", encoding="utf-8") as file:
-        test = [line.strip() for line in file.readlines()[1:]]
-        raw_x_test = [line.split("\t")[1] for line in test]
-        raw_y_test = [line.split("\t")[0] for line in test]
-
-    from pathlib import Path
-    import dvc.api
-
     params = dvc.api.params_show()
+
+    raw_x_test, _ = load_dataset_file(Path(params["dirs"]["dataset"]) / "test.txt")
 
     tokenizer = joblib.load(
         Path(params["dirs"]["outputs"]["preprocess"]) / "tokenizer.joblib"
@@ -201,11 +200,8 @@ if __name__ == "__main__":
 
     def preprocess(x):
         return pad_sequences(tokenizer.texts_to_sequences(x), maxlen=200)
-    
 
     x_test_mutated = generate_mutamorphic_dataset(raw_x_test, preprocess)
-
-    import os
 
     mutamorphic_path = Path(params["dirs"]["outputs"]["mutamorphic"])
     os.makedirs(mutamorphic_path, exist_ok=True)

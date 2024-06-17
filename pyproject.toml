@@ -4,7 +4,10 @@ version = "0.1.0"
 description = "model-training"
 authors = []
 readme = "README.md"
-package-mode = false
+packages = [
+    { include = "scripts" },
+    { include = "tests" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"

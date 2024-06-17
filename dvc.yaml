@@ -18,6 +18,7 @@ stages:
       - train
 
   evaluate:
+    always_changed: true
     cmd: python scripts/evaluate.py
     deps:
       - ${dirs.outputs.preprocess}
@@ -38,6 +39,7 @@ stages:
       - ${dirs.outputs.mutamorphic}/x_test.joblib
 
   mutamorphic_evaluate:
+    always_changed: true
     cmd: python scripts/mutamorphic/evaluate.py
     deps:
       - ${dirs.outputs.train}/model.keras

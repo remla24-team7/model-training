@@ -58,21 +58,21 @@ stages:
     params:
       params.yaml:
         evaluate:
-          slice: 500
+          slice: 1000
           batch_size: 50
     outs:
     - path: outputs/evaluate/conf_matrix.png
       hash: md5
-      md5: 2226b94b8140f5b6514bd6fa72ce5013
-      size: 17977
+      md5: 6f99eb9a252cdd7d21b395c56a324236
+      size: 18550
     - path: outputs/evaluate/metrics.json
       hash: md5
-      md5: cc208fa965751cf529b194f1eec0d261
-      size: 545
+      md5: 7149c93a56d9e1cf362e9dd8f7a31db9
+      size: 548
     - path: outputs/evaluate/roc_curve.png
       hash: md5
-      md5: 9ac5f8d64aa16285024b0d2368b49cd9
-      size: 21448
+      md5: 15423cf46c58b795470bbecfe98406a0
+      size: 21462
   mutamorphic_preprocess:
     cmd: python scripts/mutamorphic/preprocess.py
     deps:
@@ -83,5 +83,38 @@ stages:
     outs:
     - path: outputs/mutamorphic/x_test.joblib
       hash: md5
-      md5: db8b10fab7ef46002b9e42f4b78b772a
-      size: 308840098
+      md5: 1eb2cfe55c6dd2eb4a8991b2197c8a93
+      size: 291358641
+  mutamorphic_evaluate:
+    cmd: python scripts/mutamorphic/evaluate.py
+    deps:
+    - path: outputs/mutamorphic/x_test.joblib
+      hash: md5
+      md5: 1eb2cfe55c6dd2eb4a8991b2197c8a93
+      size: 291358641
+    - path: outputs/preprocess/y_test.joblib
+      hash: md5
+      md5: cb123d0b96613ac4fa75532d76b3478a
+      size: 2913833
+    - path: outputs/train/model.keras
+      hash: md5
+      md5: 5ba537477f25baa5702ea6b1309dabe9
+      size: 5472435
+    params:
+      params.yaml:
+        evaluate:
+          slice: 1000
+          batch_size: 50
+    outs:
+    - path: outputs/mutamorphic/conf_matrix.png
+      hash: md5
+      md5: bb41d375d3e7aa11ce13b3d0ec93dd70
+      size: 22141
+    - path: outputs/mutamorphic/metrics.json
+      hash: md5
+      md5: 6f40c9e6303c533e1e3281b79aecc7d2
+      size: 550
+    - path: outputs/mutamorphic/roc_curve.png
+      hash: md5
+      md5: 8afad94285374f2f3f37bb02ea8f7da5
+      size: 25068
