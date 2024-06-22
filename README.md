@@ -1,195 +1,78 @@
-# Assignment 1: ML Configuration Management
+# model-training
 
-This is the GitHub repo for assignment 1 of CS4295 Release Engineering for Machine Learning Applications. The submission is in the branch setup-pipeline.
+This project is using Poetry for dependency management, so make sure it is installed on your system.
 
-## Table of Contents
+To set up the project, run `poetry install`.
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Dataset](#dataset)
+Tip: to avoid prefixing subsequent commands with `poetry run`, launch a Poetry-aware shell with `poetry shell`.
 
-## Installation
+To sync the latest artifacts (including the dataset) from our remote, run `dvc pull`. The original dataset is also available on [Kaggle](https://www.kaggle.com/datasets/aravindhannamalai/dl-dataset/download?datasetVersionNumber=1). Note that even though our remote is public, DVC must be logged into your Google Drive account to work.
 
-1. Clone the repository to your local machine:
+To reproduce the pipeline, run `dvc repro`. The preprocess and training stages reuse existing artifacts unless specified otherwise (`--force`).
 
-    ```bash
-    git clone https://github.com/remla24-team7/project.git
-    ```
+Afterwards, you can review evaluation metrics and plots using `dvc metrics show` and `dvc plots show`.
 
-2. Navigate into the project directory:
+## Project structure
 
-    ```bash
-    cd your-repository
-    ```
-
-3. Install the required dependencies using pip:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-## Usage
-
-The submission for assignment 1 is within the branch setup pipeline. After the installation above, checkout to setup-pipeline branch.
-
-Having checked out, run the command: 
-
-    dvc repro --pull
-    
-Running the command will pull the required datasets onto your local machine and run the pipeline or get cached outputs of the trained model and evaluation. 
-
-To train or evaluate the model yourself, run the project/src/models/model_train.py file to train the model and project/src/models/model_evaluate.py to evaluate the model.
-
-
-## Dataset 
-
-The dataset we use was open for public use by kaggle. It can be found here: [dataset](https://www.kaggle.com/datasets/aravindhannamalai/dl-dataset/download?datasetVersionNumber=1)
-
-## Mutamorphic testing:
-Create dataset through:
-creation of the dataset is still reliant on the tokenizer being pressent in the repro, this should be fixed through the lib-ml package as a TODO:
+Earlier iterations of the project used the [Cookiecutter data science template](https://cookiecutter-data-science.drivendata.org/), but ultimately we pruned unused files and decided to maintain the following project structure:
 
 ```
-dvc repro make_mutamorphic_data
+├── .dvc
+│   └── config                                  -- DVC remote configuration
+├── .github
+│   └── workflow.yml                            -- GitHub Action (Workflow) to lint, reproduce, and test
+├── dataset                                     -- the raw (DVC-managed) dataset
+│   ├── train.txt
+│   ├── val.txt
+│   └── test.txt
+├── notebooks
+│   └── phishing-detection-cnn.ipynb            -- the original notebook
+├── outputs                                     -- (DVC-managed) stage outputs
+│   ├── preprocess
+│   │   ├── encoder.joblib                      -- serialized LabelEncoder
+│   │   ├── tokenizer.joblib                    -- serializer Tokenizer
+│   │   ├── x_train.joblib                      
+│   │   ├── y_train.joblib
+│   │   ├── x_val.joblib
+│   │   ├── y_val.joblib
+│   │   ├── x_test.joblib
+│   │   └── y_test.joblib
+│   ├── train
+│   │   ├── history.json                        -- training metrics report
+│   │   └── model.keras                         -- model file
+│   ├── evaluate
+│   │   ├── conf_matrix.png                     -- confusion matrix plot
+│   │   ├── metrics.json                        -- classification metrics report
+│   │   └── roc_curve.png                       -- ROC curve plot
+│   └── mutamorphic
+│       ├── conf_matrix.png
+│       ├── metrics.json
+│       ├── roc_curve.png
+│       └── x_test.joblib                       -- mutated (and preprocessed) testing data
+├── scripts                                     -- project scripts
+│   ├── mutamorphic                             -- mutamorphic testing scripts
+│   │   ├── __init__.py
+│   │   ├── preprocess.py                       -- script to mutate and preprocess testing data
+│   │   └── evaluate.py                         -- script to evaluate the model on the mutamorphic testing data
+│   ├── __init__.py
+│   ├── preprocess.py                           -- script to preprocess the entire dataset
+│   ├── train.py                                -- script to train the model
+│   └── evaluate.py                             -- script to evaluate the model on the testing data
+├── tests                                       -- pytest tests
+│   ├── __init__.py
+│   ├── test_data.py                            -- tests the dataset contents
+│   ├── test_model_train.py                     -- tests whether training is functioning as expected
+│   └── test_model_evaluate.py                  -- tests whether evaluation is functioning as expected
+├── conftest.py                                 -- pytest fixture for the (DVC) params.yaml
+├── dataset.dvc                                 -- contains the (DVC-managed) dataset location on the remote
+├── dvc.lock                                    -- DVC reproduction pipeline lock file
+├── dvc.yaml                                    -- DVC reproduction pipeline
+├── params.yaml                                 -- DVC parameters used in pipeline stages
+├── poetry.lock                                 -- Poetry project dependency lock file
+├── pyproject.toml                              -- Poetry project configuration
+└── README.md                                   -- the current README file
 ```
 
-Eval on mutamorphic data
+## Code Quality
 
-```
-dvc repro mutamorphic_eval
-```
-
-
-
-lint-results.txt:
-
-```
-The lint scores will be shown here. The Before score it the score before code improvements are made and the after score
-is the score after doing the suggested improvements.
-
-Pylint scores with initial configuration:
-
-make_dataset.py
-Before: 0.00/10
-After:  10.00/10
-
-model_evaluate.py
-Before: 6.82/10
-After:  10.00/10
-
-model_train.py:
-Before: 4.86/10
-After:  10.00/10
-
-
-flake8 evaluation:
-flake8 was run AFTER max scores with pylint was achieved.
-flake8 was configured to follow same line length rile as pyline i.e. line of length 100 os allowed:
-This tool gives no scores, so ill just show what issues showed up if they did.
-
-make_dataset.py
-no issues
-
-model_evaluate.py
-no issues
-
-model_train.py:
-Before:
-model_train.py:16:24: E127 continuation line over-indented for visual indent
-model_train.py:65:17: E128 continuation line under-indented for visual indent
-model_train.py:66:17: E128 continuation line under-indented for visual indent
-model_train.py:67:17: E128 continuation line under-indented for visual indent
-model_train.py:68:17: E128 continuation line under-indented for visual indent
-model_train.py:69:17: E124 closing bracket does not match visual indentation
-After:
-no issues
-
-Bandit evaluation:
-Bandit is run after flake8 shows no issues.
-
-make_dataset.py
-
-    Test results:
-    >> Issue: [B106:hardcoded_password_funcarg] Possible hardcoded password: '-n-'
-       Severity: Low   Confidence: Medium
-       CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
-       More Info: https://bandit.readthedocs.io/en/1.7.8/plugins/b106_hardcoded_password_funcarg.html
-       Location: make_dataset.py:26:12
-    25
-    26      tokenizer = Tokenizer(lower=True, char_level=True, oov_token='-n-')
-    27      tokenizer.fit_on_texts(raw_x_train + raw_x_val + raw_x_test)
-
-    --------------------------------------------------
-
-    Code scanned:
-            Total lines of code: 37
-            Total lines skipped (#nosec): 0
-
-    Run metrics:
-            Total issues (by severity):
-                    Undefined: 0
-                    Low: 1
-                    Medium: 0
-                    High: 0
-            Total issues (by confidence):
-                    Undefined: 0
-                    Low: 0
-                    Medium: 1
-                    High: 0
-    Files skipped (0):
-
-    Explanation by me: No fix is made here as there is no password or private information being stored. This can be
-    seen as a false positive and can be ignored as an issue.
-
-
-
-model_evaluate.py
-
-    Test results:
-            No issues identified.
-
-    Code scanned:
-            Total lines of code: 37
-            Total lines skipped (#nosec): 0
-
-    Run metrics:
-            Total issues (by severity):
-                    Undefined: 0
-                    Low: 0
-                    Medium: 0
-                    High: 0
-            Total issues (by confidence):
-                    Undefined: 0
-                    Low: 0
-                    Medium: 0
-                    High: 0
-    Files skipped (0):
-
-model_train.py:
-
-    Test results:
-            No issues identified.
-
-    Code scanned:
-            Total lines of code: 54
-            Total lines skipped (#nosec): 0
-
-    Run metrics:
-            Total issues (by severity):
-                    Undefined: 0
-                    Low: 0
-                    Medium: 0
-                    High: 0
-            Total issues (by confidence):
-                    Undefined: 0
-                    Low: 0
-                    Medium: 0
-                    High: 0
-    Files skipped (0):
-
-
-Final words: Having run three separate linters, and having no issue show up by any of them gives confidence in our codes
-lack of code smells. There was an attempt to make dslinter work as it would show ML specific code smells, but this was
-not possible due to an error which occurs while using an older version of pylint which is a requirement of dslinter
-(the issue happens within the pylint library, so I am unable to fix it in reasonable time).
-```
+In our [GitHub workflow](.github/workflows/workflow.yml) we use [Flake8](https://flake8.pycqa.org/en/latest/), [Bandit](https://bandit.readthedocs.io/en/latest/), and [Pylint](https://pylint.readthedocs.io/en/stable/) for code quality and style analysis before reproducing the pipeline, and run tests using [Pytest](https://docs.pytest.org/en/8.2.x/) afterwards.

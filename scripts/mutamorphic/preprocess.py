@@ -1,8 +1,13 @@
+import os
+from pathlib import Path
 import random
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
+import dvc.api
 import joblib
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+
+from lib_ml.dataset import load_dataset_file
 
 # pylint: disable=no-name-in-module,import-error
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -140,7 +145,7 @@ def generate_single_feature_mutants(url, num_mutations=5):
 
     # Ensure we only return a specified number of unique mutations
     unique_mutants = list(set(all_mutants))
-    num_mutations = max(num_mutations, len(unique_mutants))
+    num_mutations = min(num_mutations, len(unique_mutants))
     return random.sample(unique_mutants, num_mutations)
 
 
@@ -157,7 +162,8 @@ def generate_mutamorphic_sample(url, preprocess):
     mutated_urls = generate_single_feature_mutants(
         url, num_mutations=10
     )  # mutate the original URL
-
+    # print("original:", url)
+    # print(mutated_urls)
     for mutated_url in mutated_urls:  # structural filtreing
         if not is_valid_url(mutated_url):
             mutated_urls.remove(mutated_url)
@@ -180,19 +186,13 @@ def generate_mutamorphic_dataset(x_test, preprocess):
     for url in x_test:
         mutated_sample = generate_mutamorphic_sample(url, preprocess)
         mutated_samples.append(mutated_sample)
-    return mutated_samples
+    return np.array(mutated_samples)
 
 
 if __name__ == "__main__":
-    with open("dataset/train.txt", "r", encoding="utf-8") as file:
-        train = [line.strip() for line in file.readlines()[1:]]
-    raw_x_train = [line.split("\t")[1] for line in train]
-    raw_y_train = [line.split("\t")[0] for line in train]
-
-    from pathlib import Path
-    import dvc.api
-
     params = dvc.api.params_show()
+
+    raw_x_test, _ = load_dataset_file(Path(params["dirs"]["dataset"]) / "test.txt")
 
     tokenizer = joblib.load(
         Path(params["dirs"]["outputs"]["preprocess"]) / "tokenizer.joblib"
@@ -201,10 +201,8 @@ if __name__ == "__main__":
     def preprocess(x):
         return pad_sequences(tokenizer.texts_to_sequences(x), maxlen=200)
 
-    x_train_mutated = generate_mutamorphic_dataset(raw_x_train, preprocess)
-
-    import os
+    x_test_mutated = generate_mutamorphic_dataset(raw_x_test, preprocess)
 
     mutamorphic_path = Path(params["dirs"]["outputs"]["mutamorphic"])
     os.makedirs(mutamorphic_path, exist_ok=True)
-    joblib.dump(x_train_mutated, mutamorphic_path / "x_train.joblib")
+    joblib.dump(x_test_mutated, mutamorphic_path / "x_test.joblib")

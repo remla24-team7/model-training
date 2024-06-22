@@ -2,7 +2,7 @@ name: Reproduce and run tests
 
 on:
   push:
-    branches: [main, alex]
+    branches: [main, fix-mutamorphic]
 
 jobs:
   Reproduce-and-test:
@@ -41,6 +41,7 @@ jobs:
           dvc remote modify gdrive gdrive_use_service_account true
           dvc pull
           dvc repro
+          dvc metrics show
 
       - name: Run tests
         run: pytest

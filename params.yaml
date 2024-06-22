@@ -18,5 +18,5 @@ train:
   epochs: 2
 
 evaluate:
-  slice: 500
+  slice: 1000
   batch_size: 50

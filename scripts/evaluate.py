@@ -16,15 +16,15 @@ from sklearn.metrics import (
 )
 
 
-def evaluate_model(params):
+def evaluate_model(x_test, y_test, params):
     preprocess_path = Path(params["dirs"]["outputs"]["preprocess"])
     train_path = Path(params["dirs"]["outputs"]["train"])
 
     encoder = joblib.load(preprocess_path / "encoder.joblib")
     model = load_model(train_path / "model.keras")
 
-    x_test = joblib.load(preprocess_path / "x_test.joblib")[:params["evaluate"]["slice"]]
-    y_test = joblib.load(preprocess_path / "y_test.joblib")[:params["evaluate"]["slice"]]
+    x_test = x_test[:params["evaluate"]["slice"]]
+    y_test = y_test[:params["evaluate"]["slice"]]
 
     y_pred = model.predict(x_test, batch_size=params["evaluate"]["batch_size"]).flatten()
     y_pred_binary = y_pred.round().astype(int)
@@ -56,13 +56,8 @@ def evaluate_model(params):
     )
 
 
-if __name__ == "__main__":
-    params = dvc.api.params_show()
-
-    evaluate_path = Path(params["dirs"]["outputs"]["evaluate"])
+def save_metrics(roc_curve, confusion_matrix, metrics, evaluate_path):
     os.makedirs(evaluate_path, exist_ok=True)
-
-    roc_curve, confusion_matrix, metrics = evaluate_model(params)
 
     roc_curve.plot()
     plt.savefig(evaluate_path / "roc_curve.png")
@@ -72,3 +67,16 @@ if __name__ == "__main__":
 
     with open(evaluate_path / "metrics.json", "w", encoding="utf-8") as fp:
         json.dump(metrics, fp)
+
+
+if __name__ == "__main__":
+    params = dvc.api.params_show()
+
+    preprocess_path = Path(params["dirs"]["outputs"]["preprocess"])
+    evaluate_path = Path(params["dirs"]["outputs"]["evaluate"])
+
+    x_test = joblib.load(preprocess_path / "x_test.joblib")
+    y_test = joblib.load(preprocess_path / "y_test.joblib")
+
+    roc_curve, confusion_matrix, metrics = evaluate_model(x_test, y_test, params)
+    save_metrics(roc_curve, confusion_matrix, metrics, evaluate_path=evaluate_path)
