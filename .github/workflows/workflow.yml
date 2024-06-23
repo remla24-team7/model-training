@@ -2,7 +2,7 @@ name: Reproduce and run tests
 
 on:
   push:
-    branches: [main, fix-mutamorphic, testing-and-reporting]
+    branches: [main]
 
 jobs:
   Reproduce-and-test:
@@ -65,5 +65,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: index.html
-          path: htmlcov/coverage-report/
+          name: coverage-report
+          path: htmlcov/
