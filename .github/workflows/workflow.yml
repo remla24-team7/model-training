@@ -2,7 +2,7 @@ name: Reproduce and run tests
 
 on:
   push:
-    branches: [main, fix-mutamorphic]
+    branches: [main, fix-mutamorphic, testing-and-reporting]
 
 jobs:
   Reproduce-and-test:
