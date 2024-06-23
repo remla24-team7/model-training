@@ -13,15 +13,6 @@ def get_ram_usage():
     memory_info = process.memory_info()
     return memory_info.rss / 1024 ** 2  # Convert to MB
 
-# Function to measure serving latency and throughput
-def measure_latency_throughput(model, X_test):
-    start_time = time.time()
-    predictions = model.predict(X_test)
-    end_time = time.time()
-    latency = (end_time - start_time) / len(X_test)
-    throughput = len(X_test) / (end_time - start_time)
-    return latency, throughput
-
 # Pytest test function
 def test_model_performance(params):
     model = build_model(params)
