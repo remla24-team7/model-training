@@ -50,6 +50,10 @@ jobs:
           coverage xml
           coverage html
 
+      - name: Run tests
+        run: |
+          pytest --junitxml=test-results.xml
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -61,5 +65,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-report
-          path: htmlcov/
+          name: index.html
+          path: htmlcov/coverage-report/
