@@ -43,8 +43,12 @@ jobs:
           dvc repro
           dvc metrics show
 
-      - name: Run tests
-        run: pytest --junitxml=test-results.xml
+
+      - name: Run tests with coverage
+        run: |
+          coverage run -m pytest --junitxml-test-results.xml
+          coverage xml
+          coverage html
 
       - name: Upload test results
         if: always()
@@ -52,3 +56,10 @@ jobs:
         with:
           name: test-results
           path: test-results.xml
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: htmlcov/
