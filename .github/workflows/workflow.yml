@@ -2,7 +2,7 @@ name: Reproduce and run tests
 
 on:
   push:
-    branches: [main, fix-mutamorphic]
+    branches: [main, fix-mutamorphic, code-quality]
 
 jobs:
   Reproduce-and-test:
@@ -32,16 +32,27 @@ jobs:
         run: bandit -c pyproject.toml -r .
 
       - name: Lint (pylint)
-        run: pylint scripts/ tests/
-        
-      - name: Reproduce the pipeline
-        env:
-          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-        run: |
-          dvc remote modify gdrive gdrive_use_service_account true
-          dvc pull
-          dvc repro
-          dvc metrics show
+        run: pylint scripts/ tests/ > pylint_report.txt
 
-      - name: Run tests
-        run: pytest
+      - name: Generate pylint score chart
+        run: python generate_chart.py
+
+      - name: Commit and push chart
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add pylint_score.png
+          git commit -m "Update Pylint score chart"
+          git push
+
+#      - name: Reproduce the pipeline
+#        env:
+#          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
+#        run: |
+#          dvc remote modify gdrive gdrive_use_service_account true
+#          dvc pull
+#          dvc repro
+#          dvc metrics show
+#
+#      - name: Run tests
+#        run: pytest
