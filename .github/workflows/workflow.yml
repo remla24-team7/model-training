@@ -39,15 +39,11 @@ jobs:
       - name: Generate pylint score chart
         run: python generate_chart.py
 
-      - name: Commit and push chart
-        run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add pylint_score.png
-          git commit -m "Update Pylint score chart"
-          git push
-
-
+      - name: Upload chart as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: pylint-score-chart
+          path: pylint_score.png
 
 
 #      - name: Reproduce the pipeline
