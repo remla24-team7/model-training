@@ -26,6 +26,7 @@ jobs:
         run: |
           poetry config virtualenvs.create false
           poetry install
+          pip install pytest-cov
 
       - name: Lint (flake8)
         run: flake8
@@ -55,4 +56,20 @@ jobs:
           dvc metrics show
 
       - name: Run tests
-        run: pytest
+        run: pytest --cov=./ --cov-report=xml
+
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Generate coverage report
+        run: reportgenerator "-reports:coverage.xml" "-targetdir:coverage_report" "-reporttypes:HtmlInline;Badges"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          publish_dir: ./coverage_report
+          keep_files: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy coverage report'
