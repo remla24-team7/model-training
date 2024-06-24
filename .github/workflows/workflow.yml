@@ -61,15 +61,22 @@ jobs:
       - name: Install ReportGenerator
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-      - name: Generate coverage report
-        run: reportgenerator "-reports:coverage.xml" "-targetdir:coverage_report" "-reporttypes:HtmlInline;Badges"
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Checkout external repository
+        uses: actions/checkout@v4
         with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          publish_dir: ./coverage_report
-          keep_files: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy coverage report'
+          repository: 'https://github.com/avilakathara/Data-Visualization-Project.git'
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: 'external-repository'
+
+      - name: Copy report to external repository
+        run: |
+          cp -r coverage_report/* external-repository/
+
+      - name: Commit and push to external repository
+        run: |
+          cd external-repository
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Deploy updated coverage report"
+          git push
