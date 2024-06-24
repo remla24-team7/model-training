@@ -64,7 +64,7 @@ jobs:
       - name: Checkout external repository
         uses: actions/checkout@v4
         with:
-          repository: 'https://github.com/avilakathara/Data-Visualization-Project.git'
+          repository: 'avilakathara/Data-Visualization-Project.git'
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: 'external-repository'
 
