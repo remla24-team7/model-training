@@ -45,15 +45,14 @@ jobs:
           name: pylint-score-chart
           path: pylint_score.png
 
+      - name: Reproduce the pipeline
+        env:
+          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
+        run: |
+          dvc remote modify gdrive gdrive_use_service_account true
+          dvc pull
+          dvc repro
+          dvc metrics show
 
-#      - name: Reproduce the pipeline
-#        env:
-#          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-#        run: |
-#          dvc remote modify gdrive gdrive_use_service_account true
-#          dvc pull
-#          dvc repro
-#          dvc metrics show
-#
-#      - name: Run tests
-#        run: pytest
+      - name: Run tests
+        run: pytest

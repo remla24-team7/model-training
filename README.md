@@ -76,3 +76,28 @@ Earlier iterations of the project used the [Cookiecutter data science template](
 ## Code Quality
 
 In our [GitHub workflow](.github/workflows/workflow.yml) we use [Flake8](https://flake8.pycqa.org/en/latest/), [Bandit](https://bandit.readthedocs.io/en/latest/), and [Pylint](https://pylint.readthedocs.io/en/stable/) for code quality and style analysis before reproducing the pipeline, and run tests using [Pytest](https://docs.pytest.org/en/8.2.x/) afterwards.
+
+A chart of the average pylint scores can be seen if you go into the latest actions and look at the artifacts. the chart will be called pylint_score.png
+
+To verify the code quality manually: 
+
+First do: 
+```
+pip install poetry 
+```
+
+then install the dependencies using poetry: 
+
+```
+poetry install 
+```
+
+Having installed the dependencies, you can manually run the lints as follows: 
+
+```
+pylint scripts/ tests/
+
+bandit -c pyproject.toml -r .
+
+flake8
+```
