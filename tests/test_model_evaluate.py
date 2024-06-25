@@ -18,6 +18,8 @@ def test_evaluate_model(params):
     assert 0 <= metrics["accuracy"] <= 1, "Accuracy should be between 0 and 1"
     assert 0 <= metrics["auc"] <= 1, "AUC should be between 0 and 1"
 
+
+# pylint: disable=R0801
 def test_evaluate_model_mutamorphic(params):
     preprocess_path = Path(params["dirs"]["outputs"]["preprocess"])
     mutamorphic_path = Path(params["dirs"]["outputs"]["mutamorphic"])

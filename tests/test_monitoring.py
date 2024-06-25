@@ -1,10 +1,6 @@
-from tensorflow.keras.models import load_model
-from tensorflow.keras.callbacks import Callback
-from scripts.train import load_data, train_model, build_model
-import os
-import psutil
 import time
-from pathlib import Path
+import psutil
+from scripts.train import load_data, train_model, build_model
 
 
 # Function to measure RAM usage
@@ -12,6 +8,7 @@ def get_ram_usage():
     process = psutil.Process()
     memory_info = process.memory_info()
     return memory_info.rss / 1024 ** 2  # Convert to MB
+
 
 # Pytest test function
 def test_model_performance(params):
@@ -22,7 +19,7 @@ def test_model_performance(params):
 
     # Measure training speed
     start_time = time.time()
-    history = train_model(model, params, x_train[:10], y_train[:10], validation_data=(x_val[:10], y_val[:10]))
+    _ = train_model(model, params, x_train[:10], y_train[:10], validation_data=(x_val[:10], y_val[:10]))
     end_time = time.time()
     training_time = end_time - start_time
     print(f"Training time: {training_time:.2f} seconds")
