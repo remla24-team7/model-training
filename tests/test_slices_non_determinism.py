@@ -3,18 +3,27 @@ import pytest
 from keras.models import load_model
 from numpy.testing import assert_almost_equal
 import dvc.api
+import joblib
 
-# Assuming build_model, train_model are from your model training script
-from scripts.train import build_model, train_model, load_data
+from scripts.train import build_model, train_model
 
-# Path to the parameters and model if needed
 model_path = 'outputs/train/model.keras'
 params = dvc.api.params_show()
 
 
+def load_data(params):
+    preprocess_path = "outputs/preprocess/"
+
+    return (
+        joblib.load(preprocess_path + "x_train.joblib"),
+        joblib.load(preprocess_path + "y_train.joblib"),
+        joblib.load(preprocess_path + "x_val.joblib"),
+        joblib.load(preprocess_path + "y_val.joblib"),
+    )
+
+
 @pytest.fixture(scope="module")
 def data():
-    params = dvc.api.params_show()
     return load_data(params)
 
 
