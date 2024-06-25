@@ -58,25 +58,5 @@ jobs:
       - name: Run tests
         run: pytest --cov=./ --cov-report=xml
 
-      - name: Install ReportGenerator
-        run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
-      - name: Checkout external repository
-        uses: actions/checkout@v4
-        with:
-          repository: 'avilakathara/Data-Visualization-Project.git'
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: 'external-repository'
-
-      - name: Copy report to external repository
-        run: |
-          cp -r coverage_report/* external-repository/
-
-      - name: Commit and push to external repository
-        run: |
-          cd external-repository
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -m "Deploy updated coverage report"
-          git push
+#      - name: Install ReportGenerator
+#        run: dotnet tool install --global dotnet-reportgenerator-globaltool
