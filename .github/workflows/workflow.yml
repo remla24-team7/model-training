@@ -2,7 +2,7 @@ name: Reproduce and run tests
 
 on:
   push:
-    branches: [main, fix-mutamorphic]
+    branches: [main]
 
 jobs:
   Reproduce-and-test:
@@ -43,5 +43,27 @@ jobs:
           dvc repro
           dvc metrics show
 
+
+      - name: Run tests with coverage
+        run: |
+          coverage run -m pytest
+          coverage xml
+          coverage html
+
       - name: Run tests
-        run: pytest
+        run: |
+          pytest --junitxml=test-results.xml
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-results.xml
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: htmlcov/
