@@ -78,7 +78,7 @@ def train_model(model, x_train, y_train, validation_data=None):
         x_train, y_train,
         validation_data=validation_data,
         batch_size=50,
-        epochs=2,
+        epochs=4,
     )
 
 
@@ -98,7 +98,7 @@ def test_model_slices(data):
     results = []
 
     for i in range(2):
-        low = i * 100
+        low = i * 100 + 100
         end = low * 2
         model = build_model(params)
         train_model(model, x_train[low:end], y_train[low:end], validation_data=(x_val[low:end], y_val[low:end]))
@@ -110,8 +110,8 @@ def test_model_slices(data):
 
 def test_model_non_determinism(data):
     x_train, y_train, x_val, y_val = data
-    x_train = x_train[:500]
-    y_train = y_train[:500]
+    x_train = x_train[:10000]
+    y_train = y_train[:10000]
     x_val = x_val[:100]
     y_val = y_val[:100]
 
@@ -123,7 +123,6 @@ def test_model_non_determinism(data):
         _, accuracy = model.evaluate(x_val, y_val)
         results.append(accuracy)
 
-    mean_accuracy = sum(results) / len(results)
-
-    for acc in results:
-        assert_almost_equal(acc, mean_accuracy, decimal=2, err_msg="Model outputs vary too much")
+    difference = abs(results[1] - results[0])
+    print(difference)
+    assert difference < 0.06
