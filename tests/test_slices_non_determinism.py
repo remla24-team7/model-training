@@ -27,8 +27,8 @@ def load_data():
 def build_model(params):
     preprocess_path = "outputs/preprocess/"
 
-    tokenizer = joblib.load(preprocess_path / "tokenizer.joblib")
-    encoder = joblib.load(preprocess_path / "encoder.joblib")
+    tokenizer = joblib.load(preprocess_path + "tokenizer.joblib")
+    encoder = joblib.load(preprocess_path + "encoder.joblib")
 
     input_dim = len(tokenizer.word_index.keys()) + 1
     output_dim = len(encoder.classes_) - 1
