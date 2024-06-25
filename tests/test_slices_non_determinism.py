@@ -1,9 +1,9 @@
 # pylint: disable=import-error
 import pytest
-from keras.models import load_model
 from numpy.testing import assert_almost_equal
 import dvc.api
 import joblib
+from keras.models import load_model
 from keras.src.models import Sequential
 from keras.src.layers import Embedding, Conv1D, MaxPooling1D, Dropout, Flatten, Dense
 
@@ -12,7 +12,7 @@ params = dvc.api.params_show()
 
 
 # Copied code for testing
-def load_data(params):
+def load_data():
     preprocess_path = "outputs/preprocess/"
 
     return (
@@ -67,24 +67,24 @@ def build_model(params):
 
 
 # Copied code for testing
-def train_model(model, params, x_train, y_train, validation_data=None):
+def train_model(model, x_train, y_train, validation_data=None):
     model.compile(
-        loss=params["train"]["loss_function"],
-        optimizer=params["train"]["optimizer"],
-        metrics=params["train"]["metrics"],
+        loss="binary_crossentropy",
+        optimizer="adam",
+        metrics=['accuracy'],
     )
 
     return model.fit(
         x_train, y_train,
         validation_data=validation_data,
-        batch_size=params["train"]["batch_size"],
-        epochs=params["train"]["epochs"],
+        batch_size=50,
+        epochs=2,
     )
 
 
 @pytest.fixture(scope="module")
 def data():
-    return load_data(params)
+    return load_data()
 
 
 @pytest.fixture(scope="module")
@@ -101,7 +101,7 @@ def test_model_slices(data):
         low = i * 100
         end = low * 2
         model = build_model(params)
-        train_model(model, params, x_train[low:end], y_train[low:end], validation_data=(x_val[low:end], y_val[low:end]))
+        train_model(model, x_train[low:end], y_train[low:end], validation_data=(x_val[low:end], y_val[low:end]))
         _, accuracy = model.evaluate(x_val, y_val)
         results.append(accuracy)
 
@@ -119,7 +119,7 @@ def test_model_non_determinism(data):
 
     for _ in range(2):
         model = build_model(params)
-        train_model(model, params, x_train, y_train, validation_data=(x_val, y_val))
+        train_model(model, x_train, y_train, validation_data=(x_val, y_val))
         _, accuracy = model.evaluate(x_val, y_val)
         results.append(accuracy)
 
