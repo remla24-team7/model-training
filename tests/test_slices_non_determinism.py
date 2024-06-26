@@ -2,6 +2,7 @@
 import pytest
 import dvc.api
 import joblib
+import numpy as np
 from keras.models import load_model
 from keras.src.models import Sequential
 from keras.src.layers import Embedding, Conv1D, MaxPooling1D, Dropout, Flatten, Dense
@@ -90,6 +91,58 @@ def data():
 def trained_model():
     return load_model(model_path)
 
+
+def process_urls(filename):
+    phishing_indices = []
+    legitimate_indices = []
+    index = 0
+
+    with open(filename, 'r') as file: # pylint: disable=unspecified-encoding
+        for line in file:
+            if len(line.strip().split('\t')) == 2:
+                label, _ = line.strip().split('\t')
+                if label == "phishing":
+                    phishing_indices.append(index)
+                if label == "legitimate":
+                    legitimate_indices.append(index)
+            index += 1
+
+    return phishing_indices, legitimate_indices
+
+
+def create_subset(data_array, phishing_indices, legitimate_indices):
+    subset = []
+    combined_indices = set(phishing_indices + legitimate_indices)
+    for idx in combined_indices:
+        subset.append(data_array[idx])
+    return np.array(subset)
+
+
+def test_slices(data):
+    phishing_indices, legitimate_indices = process_urls('dataset/train.txt')
+
+    x_train, y_train, x_val, y_val = data
+
+    # First subset 50-50
+    x_train_50 = create_subset(x_train, phishing_indices[:500], legitimate_indices[:500])
+    y_train_50 = create_subset(y_train, phishing_indices[:500], legitimate_indices[:500])
+    assert len(x_train_50) == len(y_train_50) == 1000
+
+    # Second subset 70-30
+    x_train_70 = create_subset(x_train, phishing_indices[:300], legitimate_indices[:700])
+    y_train_70 = create_subset(y_train, phishing_indices[:300], legitimate_indices[:700])
+    assert len(x_train_70) == len(y_train_70) == 1000
+
+    model = build_model(params)
+    train_model(model, x_train_50, y_train_50, validation_data=(x_val[:1000], y_val[:1000]))
+    _, accuracy_50 = model.evaluate(x_val, y_val)
+    model = build_model(params)
+    train_model(model, x_train_70, y_train_70, validation_data=(x_val[:1000], y_val[:1000]))
+    _, accuracy_70 = model.evaluate(x_val, y_val)
+
+    assert accuracy_50 > 0.6
+    assert accuracy_70 > 0.6
+    assert abs(accuracy_70 - accuracy_50) < 0.1
 
 def test_model_slices(data):
     x_train, y_train, x_val, y_val = data
