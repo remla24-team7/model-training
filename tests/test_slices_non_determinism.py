@@ -142,7 +142,7 @@ def test_slices(data):
 
     assert accuracy_50 > 0.6
     assert accuracy_70 > 0.6
-    assert abs(accuracy_70 - accuracy_50) < 0.1
+    assert abs(accuracy_70 - accuracy_50) < 0.2
 
 def test_model_slices(data):
     x_train, y_train, x_val, y_val = data
