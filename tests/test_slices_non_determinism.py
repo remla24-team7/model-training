@@ -97,7 +97,7 @@ def process_urls(filename):
     legitimate_indices = []
     index = 0
 
-    with open(filename, 'r') as file: #pylint: disable=unspecified-encoding
+    with open(filename, 'r') as file:  # pylint: disable=unspecified-encoding
         for line in file:
             if len(line.strip().split('\t')) == 2:
                 label, _ = line.strip().split('\t')
