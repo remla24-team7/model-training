@@ -1,3 +1,4 @@
+# pylint: disable=no-name-in-module,import-error
 import pytest
 from lib_ml.dataset import load_dataset_file
 
