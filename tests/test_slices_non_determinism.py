@@ -1,6 +1,5 @@
 # pylint: disable=import-error
 import pytest
-from numpy.testing import assert_almost_equal
 import dvc.api
 import joblib
 from keras.models import load_model
