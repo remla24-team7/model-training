@@ -2,7 +2,7 @@ name: Reproduce and run tests
 
 on:
   push:
-    branches: [main, fix-mutamorphic, code-quality]
+    branches: [main]
 
 jobs:
   Reproduce-and-test:
@@ -58,8 +58,31 @@ jobs:
           dvc repro
           dvc metrics show
 
-      - name: Run tests
-        run: pytest --cov=./ --cov-report=xml
+      - name: Upload model artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: model
+          path: |
+            outputs/preprocess/tokenizer.joblib
+            outputs/preprocess/encoder.joblib
+            outputs/train/model.keras
 
-#      - name: Install ReportGenerator
-#        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      - name: Run tests with coverage
+        run: |
+          coverage run -m pytest
+          coverage xml
+          coverage html
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.xml
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov/
