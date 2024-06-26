@@ -14,6 +14,8 @@ Afterwards, you can review evaluation metrics and plots using `dvc metrics show`
 
 Once the project is setup, one can run the tests throug the following command: `pytest`.
 
+Automated testing is triggered on push to the main branch, testing coverage report and testing results can be found as artifacts under github actions.
+
 ## Project structure
 
 Earlier iterations of the project used the [Cookiecutter data science template](https://cookiecutter-data-science.drivendata.org/), but ultimately we pruned unused files and decided to maintain the following project structure:

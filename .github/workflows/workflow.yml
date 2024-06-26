@@ -2,7 +2,7 @@ name: Reproduce and run tests
 
 on:
   push:
-    branches: [main, fix-lint]
+    branches: [main]
 
 jobs:
   Reproduce-and-test:
